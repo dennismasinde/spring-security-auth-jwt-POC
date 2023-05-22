@@ -24,17 +24,23 @@ public class SecurityConfig {
     private final UserDetailsServiceImpl userDetailsService;
     private final DaoAuthenticationProvider authenticationProvider;
     private final AuthTokenFilter authTokenFilter;
-    private final AuthEntryPointJwt unauthorizedHandler;
+    //private final AuthEntryPointJwt unauthorizedHandler;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
+        http.cors(AbstractHttpConfigurer::disable).csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(ENDPOINTS_WHITELIST).permitAll()
-                        .anyRequest().authenticated()
-                )
-                .formLogin(form -> form
-                        .loginPage(SIGNIN_URL)
-                        .loginProcessingUrl(SIGNUP_URL));
+                .requestMatchers(ENDPOINTS_WHITELIST).permitAll()
+                .anyRequest().authenticated()
+        );
+//                .authorizeRequests().antMatchers("/api/auth/**").permitAll()
+//                .antMatchers("/api/test/**").permitAll()
+//                .anyRequest().authenticated();
+
+        http.authenticationProvider(authenticationProvider);
+
+        http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 }

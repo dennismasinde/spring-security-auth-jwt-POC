@@ -4,10 +4,7 @@ public class Util {
 
     public static final String[] ENDPOINTS_WHITELIST = {
             "/swagger-ui/**",
-            "/api/auth/signin",
-            "/api/auth/signup",
+            "/api/auth/**",
+            "/v3/api-docs/**"
     };
-
-    public static final String SIGNIN_URL = "/api/auth/signin";
-    public static final String SIGNUP_URL = "/api/auth/signup";
 }
